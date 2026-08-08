@@ -1,0 +1,5 @@
+:root {
+  background: var(--lcars-neutral-black);
+  color: var(--lcars-ink-on-black);
+  font-family: "Antonio", "Arial Narrow", sans-serif;
+}
