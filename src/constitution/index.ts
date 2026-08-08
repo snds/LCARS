@@ -17,3 +17,11 @@ export {
 } from './contrast';
 export { RECOMPOSE_MS, recomposeDuration } from './motion';
 export { FONT_FAMILY_UI, TYPE_SCALE_REM } from './typography';
+export {
+  LEGAL_PRIMITIVES,
+  GUTTER_PX,
+  densityCaps,
+  assertLegalPrimitive,
+  type Density,
+  type LegalPrimitive,
+} from './geometry';
