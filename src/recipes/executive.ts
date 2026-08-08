@@ -10,7 +10,10 @@ export function compile(
   const density = resolveDensity(profile);
   const frame = accentTokens(profile.preferences.accentFamily);
 
-  const telemetryModules = (fill.telemetry ?? []).slice(0, 2).map((item, index) => ({
+  const telemetryLimit = density === 'sparse' ? 1 : 2;
+  const actionLimit = density === 'sparse' ? 1 : 2;
+
+  const telemetryModules = (fill.telemetry ?? []).slice(0, telemetryLimit).map((item, index) => ({
     id: `metric-${index}`,
     type: 'dataBlock' as const,
     regionId: 'main',
@@ -18,7 +21,7 @@ export function compile(
     tokens: frame,
   }));
 
-  const actionModules = (fill.actions ?? []).slice(0, 2).map((action, index) => ({
+  const actionModules = (fill.actions ?? []).slice(0, actionLimit).map((action, index) => ({
     id: `action-${index}`,
     type: 'actionPill' as const,
     regionId: 'leftRail',

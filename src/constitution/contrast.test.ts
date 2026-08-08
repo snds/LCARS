@@ -13,4 +13,18 @@ describe('contrastPair', () => {
     const r = contrastPair('data.mauve', 'frame.mauve', 'bodyLabel');
     expect(r.ok).toBe(false);
   });
+
+  it('ink.onBlack on data.bluegrey clears bodyLabel APCA + AA', () => {
+    const r = contrastPair('ink.onBlack', 'data.bluegrey', 'bodyLabel');
+    expect(r.apcaLc).toBeGreaterThanOrEqual(APCA_FLOORS.bodyLabel);
+    expect(r.wcagAaPass).toBe(true);
+    expect(r.ok).toBe(true);
+  });
+
+  it('ink.onBlack on alert.orange clears bodyLabel APCA + AA', () => {
+    const r = contrastPair('ink.onBlack', 'alert.orange', 'bodyLabel');
+    expect(r.apcaLc).toBeGreaterThanOrEqual(APCA_FLOORS.bodyLabel);
+    expect(r.wcagAaPass).toBe(true);
+    expect(r.ok).toBe(true);
+  });
 });

@@ -32,7 +32,7 @@ export const TOKENS: Record<TokenId, TokenDef> = {
   'action.salmon': { hex: '#FF6666', role: 'action' },
   'action.mauve': { hex: '#CC6699', role: 'action' },
   'data.mauve': { hex: '#994466', role: 'data' },
-  'data.bluegrey': { hex: '#6666FF', role: 'data' },
+  'data.bluegrey': { hex: '#141452', role: 'data' },
   'data.amber': { hex: '#CC7700', role: 'data' },
   'alert.orange': { hex: '#FF3300', role: 'alert' },
   'neutral.black': { hex: '#000000', role: 'neutral' },

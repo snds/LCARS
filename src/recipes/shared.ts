@@ -14,7 +14,7 @@ export const STANDARD_REGIONS = [
 export function accentTokens(accentFamily: AccentFamily): { fill: TokenId; ink: TokenId } {
   switch (accentFamily) {
     case 'bluegrey':
-      return { fill: 'frame.bluegrey', ink: 'ink.onFill' };
+      return { fill: 'data.bluegrey', ink: 'ink.onBlack' };
     case 'mauve':
     case 'amber':
     case 'salmon':
