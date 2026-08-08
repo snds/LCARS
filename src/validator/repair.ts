@@ -1,17 +1,29 @@
-import { contrastPair, TOKENS, type TokenId } from '@/constitution';
+import { contrastPair, TOKENS, type SemanticRole, type TokenId } from '@/constitution';
 import type { SceneIR } from '@/ir/types';
 import type { Issue } from './validate';
 
 const TOKEN_IDS = Object.keys(TOKENS) as TokenId[];
+const FILL_ROLES = new Set<SemanticRole>(['frame', 'action', 'data', 'alert', 'neutral']);
+const INK_TOKENS = TOKEN_IDS.filter((token) => TOKENS[token].role === 'ink');
+const FILL_TOKENS = TOKEN_IDS.filter((token) => FILL_ROLES.has(TOKENS[token].role));
 
 function nearestLegalTokens(fill: string, ink: string): { fill: TokenId; ink: TokenId } {
-  const legalFill = TOKEN_IDS.includes(fill as TokenId) ? (fill as TokenId) : 'neutral.black';
-  const legalInk = TOKEN_IDS.includes(ink as TokenId) ? (ink as TokenId) : 'ink.onBlack';
-  if (contrastPair(legalInk, legalFill, 'bodyLabel').ok) {
-    return { fill: legalFill, ink: legalInk };
+  const preferredFill = FILL_TOKENS.includes(fill as TokenId) ? (fill as TokenId) : undefined;
+  const preferredInk = INK_TOKENS.includes(ink as TokenId) ? (ink as TokenId) : undefined;
+  const fillCandidates = preferredFill ? [preferredFill, ...FILL_TOKENS.filter((token) => token !== preferredFill)] : FILL_TOKENS;
+  const inkCandidates = preferredInk ? [preferredInk, ...INK_TOKENS.filter((token) => token !== preferredInk)] : INK_TOKENS;
+
+  // V1 heuristic: retain valid semantic choices where possible, then use the first
+  // fill/ink pair that clears body-label APCA and WCAG AA. It is not chromatic nearest.
+  for (const fillCandidate of fillCandidates) {
+    for (const inkCandidate of inkCandidates) {
+      if (contrastPair(inkCandidate, fillCandidate, 'bodyLabel').ok) {
+        return { fill: fillCandidate, ink: inkCandidate };
+      }
+    }
   }
-  const candidate = TOKEN_IDS.find((token) => contrastPair(token, legalFill, 'bodyLabel').ok);
-  return candidate ? { fill: legalFill, ink: candidate } : { fill: 'neutral.black', ink: 'ink.onBlack' };
+
+  return { fill: 'neutral.black', ink: 'ink.onBlack' };
 }
 
 export function repairSceneIR(ir: SceneIR, issues: Issue[]): SceneIR | null {
