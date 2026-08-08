@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CATALOG } from '@/catalog/modules';
+import type { ModuleCatalog, ModuleDef } from '@/catalog/types';
 import { contrastPair, TOKENS } from '@/constitution';
 import { SceneIRSchema } from '@/ir/schema';
+import type { RoleId } from '@/ir/types';
 import { validateSceneIR } from './validate';
 
 const base = SceneIRSchema.parse({
@@ -73,13 +75,13 @@ describe('validateSceneIR', () => {
   });
 
   it('reports scene-wide validation passes in constitution order', () => {
-    const catalog = {
+    const catalog: ModuleCatalog = {
       ...DEFAULT_CATALOG,
       statusRail: {
         ...DEFAULT_CATALOG.statusRail,
-        primitive: 'not-a-legal-primitive' as never,
-        densityMax: 'sparse' as const,
-        allowedRoles: ['engineer'],
+        primitive: 'not-a-legal-primitive' as ModuleDef['primitive'],
+        densityMax: 'sparse',
+        allowedRoles: ['engineer'] satisfies RoleId[],
         requiredClearance: ['restricted'],
       },
     };
@@ -113,21 +115,22 @@ describe('validateSceneIR', () => {
     const result = validateSceneIR(bad, { catalog });
 
     expect(result.ok).toBe(false);
-    if (result.ok) return;
-    expect(result.issues.map((issue) => issue.code)).toEqual([
-      'module-type',
-      'parent-child',
-      'geometry',
-      'token',
-      'contrast',
-      'touch',
-      'focus',
-      'density',
-      'region',
-      'role',
-      'clearance',
-      'viewport3d',
-    ]);
+    if (result.ok === false) {
+      expect(result.issues.map((issue) => issue.code)).toEqual([
+        'module-type',
+        'parent-child',
+        'geometry',
+        'token',
+        'contrast',
+        'touch',
+        'focus',
+        'density',
+        'region',
+        'role',
+        'clearance',
+        'viewport3d',
+      ]);
+    }
   });
 
   it('repairs contrast using semantic ink and fill token roles', () => {
@@ -143,18 +146,19 @@ describe('validateSceneIR', () => {
     const result = validateSceneIR(bad, { catalog: 'default' });
 
     expect(result.ok).toBe(false);
-    if (result.ok || !result.repaired) return;
-    const repaired = result.repaired.modules.find((module) => module.id === 'status');
-    expect(repaired).toBeDefined();
-    if (!repaired) return;
-    expect(TOKENS[repaired.tokens.fill as keyof typeof TOKENS].role).not.toBe('ink');
-    expect(TOKENS[repaired.tokens.ink as keyof typeof TOKENS].role).toBe('ink');
-    expect(
-      contrastPair(
-        repaired.tokens.ink as keyof typeof TOKENS,
-        repaired.tokens.fill as keyof typeof TOKENS,
-        'bodyLabel',
-      ).ok,
-    ).toBe(true);
+    if (result.ok === false && result.repaired) {
+      const repaired = result.repaired.modules.find((module) => module.id === 'status');
+      expect(repaired).toBeDefined();
+      if (!repaired) return;
+      expect(TOKENS[repaired.tokens.fill as keyof typeof TOKENS].role).not.toBe('ink');
+      expect(TOKENS[repaired.tokens.ink as keyof typeof TOKENS].role).toBe('ink');
+      expect(
+        contrastPair(
+          repaired.tokens.ink as keyof typeof TOKENS,
+          repaired.tokens.fill as keyof typeof TOKENS,
+          'bodyLabel',
+        ).ok,
+      ).toBe(true);
+    }
   });
 });
