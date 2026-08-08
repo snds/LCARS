@@ -3,6 +3,7 @@ import { DEFAULT_CATALOG } from '@/catalog/modules';
 import type { ModuleCatalog } from '@/catalog/types';
 import { SceneIRSchema } from '@/ir/schema';
 import type { Density, SceneIR } from '@/ir/types';
+import { validateViewportBinding } from '@/models3d/registry';
 import { markValidatedSceneIR } from './mark';
 import { repairSceneIR } from './repair';
 
@@ -136,11 +137,10 @@ export function validateSceneIR(input: unknown, ctx: ValidateCtx): ValidationRes
 
   // 10. Verify viewport3d bindings last.
   for (const module of ir.modules) {
-    if (module.type === 'viewport3d') {
-      const binding = module.binding;
-      if (!binding || typeof binding.modelId !== 'string' || typeof binding.units !== 'string') {
-        issues.push({ code: 'viewport3d', message: 'viewport3d requires a modelId and units binding', moduleId: module.id });
-      }
+    if (module.type !== 'viewport3d') continue;
+    const message = validateViewportBinding(module.binding);
+    if (message) {
+      issues.push({ code: 'viewport3d', message, moduleId: module.id });
     }
   }
 

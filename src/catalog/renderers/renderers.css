@@ -87,10 +87,34 @@
 }
 
 .lcars-viewport3d {
-  min-height: 120px;
+  min-height: 160px;
   display: grid;
-  place-items: center;
+  place-items: stretch;
   text-transform: uppercase;
+}
+
+.lcars-viewport3d__canvas {
+  width: 100%;
+  min-height: 160px;
+  border-radius: 0 0 24px 0;
+}
+
+.lcars-viewport3d__fallback {
+  margin: 0;
+  padding: 16px;
+  text-align: center;
+}
+
+.lcars-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .lcars-dialogue-turn {
