@@ -1,0 +1,36 @@
+{
+  "name": "lcars-generative-interface",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.1.2",
+    "apca-w3": "^0.1.9",
+    "motion": "^12.23.12",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "three": "^0.171.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@types/three": "^0.171.0",
+    "@vitejs/plugin-react": "^4.5.2",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.9.3",
+    "vite": "^6.4.1",
+    "vitest": "^4.1.8"
+  }
+}
