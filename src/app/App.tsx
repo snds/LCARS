@@ -1,4 +1,5 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { TOKENS, tokensToCssVars } from '@/constitution';
 import { RoleIdSchema } from '@/ir/schema';
 import type { RoleId } from '@/ir/types';
 import { MockPlanner } from '@/planner';
@@ -63,7 +64,9 @@ export function App() {
   };
 
   return (
-    <div className="lcars-app">
+    <>
+      <style>{tokensToCssVars(TOKENS)}</style>
+      <div className="lcars-app">
       <div className="lcars-chrome">
         <label htmlFor="combadge-role">Combadge role</label>
         <select
@@ -95,6 +98,7 @@ export function App() {
           },
         }}
       />
-    </div>
+      </div>
+    </>
   );
 }
