@@ -3,3 +3,24 @@
   color: var(--lcars-ink-on-black);
   font-family: "Antonio", "Arial Narrow", sans-serif;
 }
+
+.lcars-app {
+  min-height: 100vh;
+}
+
+.lcars-chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.lcars-chrome label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.lcars-chrome select {
+  min-height: 44px;
+  padding: 0 8px;
+}

@@ -29,14 +29,36 @@
   text-transform: uppercase;
 }
 
+.lcars-query-aperture {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-width: 0;
+}
+
+.lcars-query-aperture__elbow {
+  flex: 0 0 24px;
+  min-height: 44px;
+  border-radius: 0 0 24px 0;
+  background: currentColor;
+  opacity: 0.35;
+}
+
 .lcars-query-aperture input {
   min-height: 44px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   border: none;
   background: transparent;
   color: inherit;
   font: inherit;
   text-transform: uppercase;
+  padding: 0 12px;
+}
+
+.lcars-query-aperture[data-degraded='true'] {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 .lcars-surface {
