@@ -64,10 +64,17 @@ export type Citation = {
   url?: string;
 };
 
+export type Comparison = {
+  id: string;
+  label: string;
+  value: string;
+};
+
 export type SlotFill = {
   claims?: Claim[];
   evidence?: Evidence[];
   citations?: Citation[];
+  comparisons?: Comparison[];
   summary?: string;
   telemetry?: Array<{ label: string; value: string }>;
   alerts?: Array<{ level: string; message: string }>;

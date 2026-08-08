@@ -29,13 +29,21 @@ export async function fetchResearchStub(
     { id: 'ref2', label: 'Subspace Theory Compendium, Vol. III' },
   ];
 
+  const baseComparisons = [
+    { id: 't1', label: 'Cochrane harmonics', value: 'Stable under warp 7' },
+    { id: 't2', label: 'Variance model', value: 'Tachyon drift at boundary layer' },
+  ];
+
   switch (recipeId) {
     case 'research.baseline':
       return {
         claims: baseClaims,
         evidence: baseEvidence,
         citations: baseCitations,
-        summary: `Research summary for: ${query}`,
+        comparisons: baseComparisons,
+        summary: profile.preferences.verbosity === 'verbose'
+          ? `Research summary for: ${query}. Comparative analysis complete — ${baseClaims.length} claims evaluated against ${baseEvidence.length} evidence sources.`
+          : `Research summary for: ${query}`,
         actions: [
           { id: 'compare', label: 'COMPARE' },
           { id: 'export', label: 'EXPORT' },

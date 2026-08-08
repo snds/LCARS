@@ -19,6 +19,7 @@ export function compile(
   const data = dataTokens(profile.preferences.accentFamily);
   const claims = fill.claims ?? [];
   const evidence = fill.evidence ?? [];
+  const comparisons = fill.comparisons ?? [];
 
   const claimBlocks = claims.slice(0, 2).map((claim, index) => ({
     id: `claim-data-${index}`,
@@ -39,6 +40,14 @@ export function compile(
     tokens: data,
   }));
 
+  const compareBlocks = comparisons.slice(0, 1).map((item, index) => ({
+    id: `compare-data-${index}`,
+    type: 'dataBlock' as const,
+    regionId: 'main',
+    props: { title: item.label, value: item.value },
+    tokens: data,
+  }));
+
   const claimChildren = [...claimBlocks, ...evidencePanels].map((module) => module.id);
 
   const mainModules: ModuleInstance[] = [
@@ -54,7 +63,21 @@ export function compile(
     ...evidencePanels,
   ];
 
-  if (fill.summary) {
+  if (compareBlocks.length > 0) {
+    mainModules.push({
+      id: 'compare',
+      type: 'comparePanel' as const,
+      regionId: 'main',
+      props: { title: 'Theory comparison' },
+      tokens: frame,
+      children: compareBlocks.map((module) => module.id),
+    });
+    mainModules.push(...compareBlocks);
+  }
+
+  const dialogue = maybeDialogueModule(intent, density, frame);
+
+  if (fill.summary && !dialogue) {
     mainModules.push({
       id: 'summary',
       type: 'prose' as const,
@@ -64,7 +87,6 @@ export function compile(
     });
   }
 
-  const dialogue = maybeDialogueModule(intent, density, frame);
   if (dialogue) {
     mainModules.push(dialogue);
   }
@@ -76,6 +98,13 @@ export function compile(
     props: { label: action.label, action: action.id, touchPx: 44 },
     tokens: { fill: 'action.amber' as const, ink: 'ink.onFill' as const },
   }));
+
+  const dialogueTurns = dialogue
+    ? [
+        { role: 'user' as const, text: intent.raw },
+        { role: 'system' as const, text: fill.summary ?? 'Analysis in progress.' },
+      ]
+    : undefined;
 
   return {
     version: 1,
@@ -92,8 +121,6 @@ export function compile(
     focus: { aperture: true },
     a11y: { title: 'Research workspace', liveMessage: fill.summary },
     surfaceState: 'result',
-    ...(dialogue
-      ? { dialogue: { turns: [{ role: 'user' as const, text: intent.raw }] } }
-      : {}),
+    ...(dialogueTurns ? { dialogue: { turns: dialogueTurns } } : {}),
   };
 }
