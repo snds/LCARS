@@ -1,0 +1,115 @@
+import { contrastPair, densityCaps, LEGAL_PRIMITIVES, TOKENS } from '@/constitution';
+import { DEFAULT_CATALOG } from '@/catalog/modules';
+import type { ModuleCatalog } from '@/catalog/types';
+import { SceneIRSchema } from '@/ir/schema';
+import type { Density, SceneIR } from '@/ir/types';
+import { repairSceneIR } from './repair';
+
+export type Issue = {
+  code: string;
+  message: string;
+  moduleId?: string;
+};
+
+export type ValidateCtx = {
+  catalog: 'default' | ModuleCatalog;
+  clearance?: string[];
+};
+
+export type ValidationResult =
+  | { ok: true; ir: SceneIR }
+  | { ok: false; issues: Issue[]; repaired?: SceneIR };
+
+const densityRank: Record<Density, number> = { sparse: 0, standard: 1, dense: 2 };
+
+function resolveCatalog(catalog: ValidateCtx['catalog']): ModuleCatalog {
+  return catalog === 'default' ? DEFAULT_CATALOG : catalog;
+}
+
+function hasOwn(object: object, key: string): boolean {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+export function validateSceneIR(input: unknown, ctx: ValidateCtx): ValidationResult {
+  const parsed = SceneIRSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, issues: [{ code: 'schema', message: parsed.error.message }] };
+  }
+
+  const ir = parsed.data;
+  const catalog = resolveCatalog(ctx.catalog);
+  const issues: Issue[] = [];
+  const regions = new Map(ir.regions.map((region) => [region.id, region.kind]));
+  const modulesById = new Map(ir.modules.map((module) => [module.id, module]));
+
+  for (const module of ir.modules) {
+    const definition = catalog[module.type];
+    if (!definition) {
+      issues.push({ code: 'module-type', message: `Unknown module type: ${module.type}`, moduleId: module.id });
+      continue;
+    }
+
+    for (const childId of module.children ?? []) {
+      const child = modulesById.get(childId);
+      if (!child || !definition.allowedChildren?.includes(child.type)) {
+        issues.push({ code: 'parent-child', message: `Illegal child ${childId} for ${module.type}`, moduleId: module.id });
+      }
+    }
+
+    if (definition.primitive !== 'composite' && !LEGAL_PRIMITIVES.includes(definition.primitive)) {
+      issues.push({ code: 'geometry', message: `Illegal primitive: ${definition.primitive}`, moduleId: module.id });
+    }
+
+    const regionKind = regions.get(module.regionId);
+    if (!regionKind || !definition.allowedRegions.includes(regionKind)) {
+      issues.push({ code: 'region', message: `Module ${module.type} is illegal in region ${module.regionId}`, moduleId: module.id });
+    }
+
+    const tokenIds = [module.tokens.fill, module.tokens.ink, module.tokens.accent].filter(
+      (token): token is string => token !== undefined,
+    );
+    if (tokenIds.some((token) => !hasOwn(TOKENS, token))) {
+      issues.push({ code: 'token', message: `Unknown token on ${module.id}`, moduleId: module.id });
+    } else if (!contrastPair(module.tokens.ink as keyof typeof TOKENS, module.tokens.fill as keyof typeof TOKENS, 'bodyLabel').ok) {
+      issues.push({ code: 'contrast', message: `Illegal ink/fill contrast on ${module.id}`, moduleId: module.id });
+    }
+
+    const touchPx = module.props.touchPx;
+    if (touchPx !== undefined && (typeof touchPx !== 'number' || touchPx < densityCaps(ir.density).minTouchPx)) {
+      issues.push({ code: 'touch', message: `Touch target on ${module.id} is below minimum`, moduleId: module.id });
+    }
+
+    if (definition.densityMax && densityRank[ir.density] > densityRank[definition.densityMax]) {
+      issues.push({ code: 'density', message: `${module.type} exceeds its density cap`, moduleId: module.id });
+    }
+
+    if (definition.allowedRoles && !definition.allowedRoles.includes(ir.role)) {
+      issues.push({ code: 'role', message: `${module.type} is not allowed for ${ir.role}`, moduleId: module.id });
+    }
+
+    if (definition.requiredClearance?.some((clearance) => !ctx.clearance?.includes(clearance))) {
+      issues.push({ code: 'clearance', message: `Insufficient clearance for ${module.type}`, moduleId: module.id });
+    }
+
+    if (module.type === 'viewport3d') {
+      const binding = module.binding;
+      if (!binding || typeof binding.modelId !== 'string' || typeof binding.units !== 'string') {
+        issues.push({ code: 'viewport3d', message: 'viewport3d requires a modelId and units binding', moduleId: module.id });
+      }
+    }
+  }
+
+  if (ir.focus.moduleId && !modulesById.has(ir.focus.moduleId)) {
+    issues.push({ code: 'focus', message: `Focus module does not exist: ${ir.focus.moduleId}` });
+  }
+
+  if (ir.modules.length > densityCaps(ir.density).maxModules) {
+    issues.push({ code: 'density', message: `Module count exceeds ${ir.density} density cap` });
+  }
+
+  if (issues.length > 0) {
+    const repaired = repairSceneIR(ir, issues);
+    return { ok: false, issues, ...(repaired ? { repaired } : {}) };
+  }
+  return { ok: true, ir };
+}
