@@ -3,6 +3,7 @@ import { DEFAULT_CATALOG } from '@/catalog/modules';
 import type { ModuleCatalog } from '@/catalog/types';
 import { SceneIRSchema } from '@/ir/schema';
 import type { Density, SceneIR } from '@/ir/types';
+import { markValidatedSceneIR } from './mark';
 import { repairSceneIR } from './repair';
 
 export type Issue = {
@@ -147,5 +148,5 @@ export function validateSceneIR(input: unknown, ctx: ValidateCtx): ValidationRes
     const repaired = repairSceneIR(ir, issues);
     return { ok: false, issues, ...(repaired ? { repaired } : {}) };
   }
-  return { ok: true, ir };
+  return { ok: true, ir: markValidatedSceneIR(ir) };
 }
