@@ -177,8 +177,7 @@ export function createRuntime(deps: RuntimeDeps) {
       }
 
       session = withSurfaceId(session, result.ir.surfaceId);
-      ir = markValidatedSceneIR({ ...result.ir, surfaceState: 'result' });
-      notify();
+      setIR({ ...result.ir, surfaceState: 'result' });
     },
   };
 }

@@ -1,8 +1,8 @@
-import { useRef, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { RoleIdSchema } from '@/ir/schema';
 import type { RoleId } from '@/ir/types';
 import { MockPlanner } from '@/planner';
-import { createRuntime } from '@/runtime';
+import { createRuntime, probeVoiceAperture, startVoiceListen } from '@/runtime';
 import { SurfaceHost } from './SurfaceHost';
 import './shell.css';
 
@@ -29,6 +29,39 @@ export function App() {
     () => runtime.getProfile(),
   );
 
+  const stopListenRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      stopListenRef.current?.();
+      stopListenRef.current = null;
+    };
+  }, []);
+
+  const handleVoice = () => {
+    if (probeVoiceAperture() === 'unsupported') {
+      runtime.markVoiceDegraded();
+      return;
+    }
+
+    stopListenRef.current?.();
+    stopListenRef.current = startVoiceListen({
+      onResult: (transcript) => {
+        stopListenRef.current?.();
+        stopListenRef.current = null;
+        void runtime.submitIntent(transcript, 'voice');
+      },
+      onError: () => {
+        stopListenRef.current = null;
+        runtime.markVoiceDegraded();
+      },
+    });
+
+    if (!stopListenRef.current) {
+      runtime.markVoiceDegraded();
+    }
+  };
+
   return (
     <div className="lcars-app">
       <div className="lcars-chrome">
@@ -45,6 +78,14 @@ export function App() {
             </option>
           ))}
         </select>
+        <button
+          type="button"
+          className="lcars-module lcars-action-pill"
+          aria-label="Voice command"
+          onClick={handleVoice}
+        >
+          VOICE
+        </button>
       </div>
       <SurfaceHost
         ir={ir}
