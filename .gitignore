@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .bare-origin.git/
+
+# Brainstorm visual companion sessions
+.superpowers/
