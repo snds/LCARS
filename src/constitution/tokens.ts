@@ -34,7 +34,8 @@ export const TOKENS: Record<TokenId, TokenDef> = {
   'data.mauve': { hex: '#994466', role: 'data' },
   'data.bluegrey': { hex: '#141452', role: 'data' },
   'data.amber': { hex: '#CC7700', role: 'data' },
-  'alert.orange': { hex: '#FF3300', role: 'alert' },
+  // Brightened so ink.onFill clears bodyLabel APCA Lc≥75 + WCAG AA (classic #FF3300 fails Lc).
+  'alert.orange': { hex: '#FFCC33', role: 'alert' },
   'neutral.black': { hex: '#000000', role: 'neutral' },
   'neutral.gutter': { hex: '#000000', role: 'neutral' },
   'ink.onFill': { hex: '#000000', role: 'ink' },

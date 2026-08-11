@@ -21,8 +21,8 @@ describe('contrastPair', () => {
     expect(r.ok).toBe(true);
   });
 
-  it('ink.onBlack on alert.orange clears bodyLabel APCA + AA', () => {
-    const r = contrastPair('ink.onBlack', 'alert.orange', 'bodyLabel');
+  it('ink.onFill on alert.orange clears bodyLabel APCA + AA', () => {
+    const r = contrastPair('ink.onFill', 'alert.orange', 'bodyLabel');
     expect(r.apcaLc).toBeGreaterThanOrEqual(APCA_FLOORS.bodyLabel);
     expect(r.wcagAaPass).toBe(true);
     expect(r.ok).toBe(true);

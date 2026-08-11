@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "surfaceId": "research.baseline",
+  "role": "physicist",
+  "density": "standard",
+  "intent": {
+    "class": "infoseek",
+    "raw": "",
+    "analysisNeedsDialogue": false
+  },
+  "regions": [
+    {
+      "id": "header",
+      "kind": "header"
+    },
+    {
+      "id": "leftRail",
+      "kind": "rail"
+    },
+    {
+      "id": "main",
+      "kind": "main"
+    },
+    {
+      "id": "mode",
+      "kind": "mode"
+    },
+    {
+      "id": "footer",
+      "kind": "status"
+    }
+  ],
+  "modules": [
+    {
+      "id": "header-elbow",
+      "type": "elbow",
+      "regionId": "header",
+      "props": {
+        "orientation": "horizontal"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "rail-primary",
+      "type": "actionPill",
+      "regionId": "leftRail",
+      "props": {
+        "label": "HOME",
+        "action": "home",
+        "touchPx": 44
+      },
+      "tokens": {
+        "fill": "action.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "mode-select",
+      "type": "modeSelect",
+      "regionId": "mode",
+      "props": {
+        "options": [
+          "OVERVIEW",
+          "DETAIL"
+        ],
+        "value": "OVERVIEW"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "aperture",
+      "type": "queryAperture",
+      "regionId": "footer",
+      "props": {},
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "status",
+      "type": "statusRail",
+      "regionId": "footer",
+      "props": {
+        "state": "idle",
+        "label": "READY"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    }
+  ],
+  "focus": {
+    "aperture": true
+  },
+  "a11y": {
+    "title": "physicist workspace"
+  },
+  "surfaceState": "idle"
+}

@@ -15,7 +15,7 @@ export function compile(
     type: 'dataBlock' as const,
     regionId: 'main',
     props: { title: alert.level.toUpperCase(), value: alert.message },
-    tokens: { fill: 'alert.orange' as const, ink: 'ink.onBlack' as const },
+    tokens: { fill: 'alert.orange' as const, ink: 'ink.onFill' as const },
   }));
 
   const telemetryModules = (fill.telemetry ?? []).slice(0, 4).map((item, index) => ({

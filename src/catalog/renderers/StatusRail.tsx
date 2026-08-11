@@ -1,9 +1,11 @@
+import { usePrefersReducedMotion } from '@/app/usePrefersReducedMotion';
 import { moduleStyles, type StatusRailProps } from './shared';
 import type { ModuleRendererProps } from './types';
 
 export function StatusRail({ instance }: ModuleRendererProps) {
   const props = instance.props as StatusRailProps;
-  const isWorking = props.state === 'working';
+  const reducedMotion = usePrefersReducedMotion();
+  const isWorking = props.state === 'working' && !reducedMotion;
   const label = props.label ?? props.state ?? '';
 
   return (

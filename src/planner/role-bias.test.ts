@@ -34,8 +34,7 @@ describe('role-bias matrix', () => {
         session: { surfaceId: null },
       });
       const v = validateSceneIR(ir, { catalog: 'default' });
-      if (!v.ok) console.log(role, ir.surfaceId, ir.density, ir.modules.length, v.issues);
-      expect(v.ok).toBe(true);
+      expect(v.ok, `${role} ${ir.surfaceId} failed validation`).toBe(true);
     }
   });
 });

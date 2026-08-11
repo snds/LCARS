@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 import { TOKENS, tokensToCssVars } from '@/constitution';
+import { recomposeDuration } from '@/constitution/motion';
 import { renderModule, type ModuleHandlers } from '@/catalog/renderers';
 import '@/catalog/renderers/renderers.css';
 import type { ModuleInstance, SceneIR } from '@/ir/types';
 import { assertValidatedSceneIR } from '@/validator';
+import { usePrefersReducedMotion } from './usePrefersReducedMotion';
 
 const LANDMARK_BY_KIND = {
   header: 'banner',
@@ -64,15 +67,26 @@ export type SurfaceHostProps = {
 
 export function SurfaceHost({ ir, handlers = {} }: SurfaceHostProps) {
   assertValidatedSceneIR(ir);
+  const reducedMotion = usePrefersReducedMotion();
+  const durationMs = recomposeDuration(reducedMotion);
 
   return (
     <>
       <style>{tokensToCssVars(TOKENS)}</style>
-      <div className="lcars-surface" data-surface-id={ir.surfaceId} data-state={ir.surfaceState}>
+      <motion.div
+        className="lcars-surface"
+        data-surface-id={ir.surfaceId}
+        data-state={ir.surfaceState}
+        data-recompose-ms={durationMs}
+        key={`${ir.surfaceId}-${ir.surfaceState}`}
+        initial={false}
+        animate={{ opacity: 1 }}
+        transition={{ duration: durationMs / 1000 }}
+      >
         {ir.regions.map((region) => (
           <div key={region.id}>{renderRegion(region, ir, handlers)}</div>
         ))}
-      </div>
+      </motion.div>
     </>
   );
 }

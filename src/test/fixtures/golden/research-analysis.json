@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "surfaceId": "research.baseline",
+  "role": "physicist",
+  "density": "standard",
+  "intent": {
+    "class": "analysis",
+    "raw": "why do these theories diverge",
+    "analysisNeedsDialogue": true
+  },
+  "regions": [
+    {
+      "id": "header",
+      "kind": "header"
+    },
+    {
+      "id": "leftRail",
+      "kind": "rail"
+    },
+    {
+      "id": "main",
+      "kind": "main"
+    },
+    {
+      "id": "mode",
+      "kind": "mode"
+    },
+    {
+      "id": "footer",
+      "kind": "status"
+    }
+  ],
+  "modules": [
+    {
+      "id": "header-elbow",
+      "type": "elbow",
+      "regionId": "header",
+      "props": {
+        "orientation": "horizontal"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "rail-primary",
+      "type": "actionPill",
+      "regionId": "leftRail",
+      "props": {
+        "label": "HOME",
+        "action": "home",
+        "touchPx": 44
+      },
+      "tokens": {
+        "fill": "action.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "mode-select",
+      "type": "modeSelect",
+      "regionId": "mode",
+      "props": {
+        "options": [
+          "OVERVIEW",
+          "DETAIL"
+        ],
+        "value": "OVERVIEW"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "aperture",
+      "type": "queryAperture",
+      "regionId": "footer",
+      "props": {},
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "status",
+      "type": "statusRail",
+      "regionId": "footer",
+      "props": {
+        "state": "result",
+        "label": "RESULT"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "action-0",
+      "type": "actionPill",
+      "regionId": "leftRail",
+      "props": {
+        "label": "COMPARE",
+        "action": "compare",
+        "touchPx": 44
+      },
+      "tokens": {
+        "fill": "action.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "action-1",
+      "type": "actionPill",
+      "regionId": "leftRail",
+      "props": {
+        "label": "EXPORT",
+        "action": "export",
+        "touchPx": 44
+      },
+      "tokens": {
+        "fill": "action.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "claims",
+      "type": "claimList",
+      "regionId": "main",
+      "props": {
+        "title": "Claims"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      },
+      "children": [
+        "claim-data-0",
+        "claim-data-1",
+        "evidence-0"
+      ]
+    },
+    {
+      "id": "claim-data-0",
+      "type": "dataBlock",
+      "regionId": "main",
+      "props": {
+        "title": "Subspace field harmonics remain stable under warp 7",
+        "value": "91% confidence"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "claim-data-1",
+      "type": "dataBlock",
+      "regionId": "main",
+      "props": {
+        "title": "Tachyon interference patterns correlate with theory divergence",
+        "value": "78% confidence"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "evidence-0",
+      "type": "evidencePanel",
+      "regionId": "main",
+      "props": {
+        "title": "Astrometrics Archive",
+        "summary": "Comparative analysis of warp field equations across three canonical models."
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "compare",
+      "type": "comparePanel",
+      "regionId": "main",
+      "props": {
+        "title": "Theory comparison"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      },
+      "children": [
+        "compare-data-0"
+      ]
+    },
+    {
+      "id": "compare-data-0",
+      "type": "dataBlock",
+      "regionId": "main",
+      "props": {
+        "title": "Cochrane harmonics",
+        "value": "Stable under warp 7"
+      },
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    },
+    {
+      "id": "dialogue",
+      "type": "dialogue",
+      "regionId": "main",
+      "props": {},
+      "tokens": {
+        "fill": "frame.amber",
+        "ink": "ink.onFill"
+      }
+    }
+  ],
+  "focus": {
+    "aperture": true
+  },
+  "a11y": {
+    "title": "Research workspace",
+    "liveMessage": "Research summary for: why do these theories diverge. Comparative analysis complete — 2 claims evaluated against 2 evidence sources."
+  },
+  "dialogue": {
+    "turns": [
+      {
+        "role": "user",
+        "text": "why do these theories diverge"
+      },
+      {
+        "role": "system",
+        "text": "Research summary for: why do these theories diverge. Comparative analysis complete — 2 claims evaluated against 2 evidence sources."
+      }
+    ]
+  },
+  "surfaceState": "result"
+}
