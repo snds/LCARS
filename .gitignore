@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .bare-origin.git/
-<<<<<<< HEAD
-=======
 
 # Brainstorm visual companion sessions
 .superpowers/
->>>>>>> cursor/lcars-generative-interface-a660
